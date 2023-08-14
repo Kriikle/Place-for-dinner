@@ -1,0 +1,12 @@
+DB_TYPE = 1  # 1:sqlite, 2:postgres
+DB_SQLITE_NAME = 'weat.db'
+DB_HOST = ''
+DB_USERNAME = ''
+DB_PASSWORD = ''
+DB_PORT = ''
+DB_NAME = 'Some name'
+TOKEN = {
+    'SECRET_KEY': "4d00624f871a757849606fe36ea2130777a61061f0ddb4e0b41c754f0b533a07",
+    'ALGORITHM': "HS256",
+    'ACCESS_TOKEN_EXPIRE_MINUTES': 30
+}
