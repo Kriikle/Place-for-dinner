@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from core.schemas.restaurant import RestaurantBase, RestaurantCreate, RestaurantRead
 from core.models.restaurant import Restaurant
-from v2.functions.crud import get_all_, get_one_, create_, update_, delete_
+from v1.functions.crud import get_all_, get_one_, create_, update_, delete_
 from config.connection import SessionLocal
 
 

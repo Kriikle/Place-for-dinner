@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from v2.endpoints import auth
-from v2.endpoints import user, docs, restaurant
-from v2.functions.auth import get_current_user
+from v1.endpoints import auth
+from v1.endpoints import user, docs, restaurant
+from v1.functions.auth import get_current_user
 
 router = APIRouter()
 

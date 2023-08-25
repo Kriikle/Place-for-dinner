@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from core.schemas.user import UserBase, UserCreate, UserRead
 from core.models.user import User
-from v2.functions.crud import get_all_, get_one_, create_, update_, delete_
-from v2.functions.auth import get_password_hash, get_current_user
+from v1.functions.crud import get_all_, get_one_, create_, update_, delete_
+from v1.functions.auth import get_password_hash, get_current_user
 
 from config.connection import get_db
 

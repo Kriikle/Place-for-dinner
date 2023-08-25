@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
 from core.schemas.token import TokenBase
-from v2.functions.auth import authenticate_user, create_access_token
+from v1.functions.auth import authenticate_user, create_access_token
 
 from config.connection import get_db
 
