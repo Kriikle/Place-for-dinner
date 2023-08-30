@@ -6,7 +6,11 @@ from config.params import *
 
 path = os.getcwd()
 if DB_TYPE == 1:
-    SQLALCHEMY_DATABASE_URL = "sqlite:///" + path + '\\' + DB_SQLITE_NAME
+    os_type = os.name
+    if os_type == 'nt':
+        SQLALCHEMY_DATABASE_URL = "sqlite:///" + path + '\\' + DB_SQLITE_NAME
+    else:
+        SQLALCHEMY_DATABASE_URL = "sqlite:///" + path + '/' + DB_SQLITE_NAME
 elif DB_TYPE == 2:
     SQLALCHEMY_DATABASE_URL = "postgresql://"\
                               + DB_USERNAME +\
