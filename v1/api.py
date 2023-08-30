@@ -16,5 +16,6 @@ api_router.include_router(
 api_router.include_router(
     restaurant.router,
     prefix="/restaurants",
-    tags=["restaurants"],)
+    tags=["restaurants"],
+    dependencies=[Depends(get_current_user)])
 
