@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 
 from core.schemas.restaurant import RestaurantBase, RestaurantCreate, RestaurantRead
 from core.models.restaurant import Restaurant
+from core.schemas.user import UserRead
+from v1.functions.auth import get_current_user
 from v1.functions.crud import get_all_, get_one_, create_, update_, delete_
 from config.connection import SessionLocal
 
@@ -35,9 +37,9 @@ def get_one(item_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=RestaurantRead)
-def create(new_row: RestaurantCreate, db: Session = Depends(get_db)):
+def create(new_row: RestaurantCreate, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+    new_row.user_id = current_user.id
     row = create_(Restaurant, new_row, db)
-    print(row.__dict__)
     return row
 
 

@@ -13,7 +13,7 @@ class RestaurantBase(BaseModel):
 
 
 class RestaurantCreate(RestaurantBase):
-    pass
+    user_id: int
 
 
 class RestaurantRead(RestaurantBase):

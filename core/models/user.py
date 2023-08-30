@@ -15,5 +15,7 @@ class User(Base):
     patronymic = Column(String, nullable=True)
     password = Column(String, nullable=False)
 
+    restaurants = relationship("Restaurant", lazy='dynamic', back_populates="user")
+
     def __repr__(self):
         return '{} {} {}'.format(self.lastname, self.firstname, self.patronymic)
