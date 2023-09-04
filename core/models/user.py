@@ -14,6 +14,7 @@ class User(Base):
     lastname = Column(String, nullable=True)
     patronymic = Column(String, nullable=True)
     password = Column(String, nullable=False)
+    is_admin = Column(Boolean, nullable=True, )
 
     restaurants = relationship("Restaurant", lazy='dynamic', back_populates="user")
 

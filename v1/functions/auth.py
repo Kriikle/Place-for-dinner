@@ -64,3 +64,21 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
     return user
 
 
+async def get_is_admin(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, TOKEN['SECRET_KEY'], algorithms=TOKEN['ALGORITHM'])
+        login: str = payload.get("sub")
+        if login is None:
+            raise credentials_exception
+        token_data = TokenData(login=login)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter_by(login=token_data.login).first()
+    if user is None or user.is_admin != True:
+        raise credentials_exception
+    return user

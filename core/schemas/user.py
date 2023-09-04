@@ -17,6 +17,10 @@ class UserCreate(UserBase):
     password: constr(max_length=120)
 
 
+class UserCreateAdmin(UserBase):
+    password: constr(max_length=120)
+    is_admin: bool
+
+
 class UserRead(UserBase):
     pass
-

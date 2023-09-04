@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from core.schemas.user import UserBase, UserCreate, UserRead
+from core.schemas.user import UserBase, UserCreate, UserRead, UserCreateAdmin
 from core.models.user import User
 from v1.functions.crud import get_all_, get_one_, create_, update_, delete_
 from v1.functions.auth import get_password_hash, get_current_user
@@ -28,7 +28,7 @@ def get_one(item_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=UserRead)
-def create(new_row: UserCreate, db: Session = Depends(get_db)):
+def create(new_row: UserCreateAdmin, db: Session = Depends(get_db)):
     new_row.password = get_password_hash(new_row.password)
     existing = db.query(User).filter((User.login == new_row.login) | (User.email == new_row.email)).all()
     if existing:
@@ -51,6 +51,3 @@ def delete(item_id: int, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-@router.get("/me/", response_model=UserRead)
-async def read_users_me(current_user: UserRead = Depends(get_current_user)):
-    return current_user
