@@ -1,5 +1,16 @@
 version: '3.4'
 services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=User
+      - POSTGRES_PASSWORD=Admin
+      - POSTGRES_DB=Some
   backend:
     build: .
     ports:
@@ -14,17 +25,7 @@ services:
       - DB_NAME=Some
       - TOKEN_SECRET_KEY=
       - TOKEN_ALGORITHM
-  db:
-    image: postgres
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    expose:
-      - 5432
-    environment:
-      - POSTGRES_USER=User
-      - POSTGRES_PASSWORD=Admin
-      - POSTGRES_DB=Some
+
 
 volumes:
   postgres_data:
