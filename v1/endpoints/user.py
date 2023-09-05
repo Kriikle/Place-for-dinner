@@ -37,7 +37,7 @@ def create(new_row: UserCreateAdmin, db: Session = Depends(get_db)):
 
 
 @router.put("/{item_id}", response_model=UserRead)
-def update(item_id: int, new_row: UserBase, db: Session = Depends(get_db)):
+def update(item_id: int, new_row: UserCreateAdmin, db: Session = Depends(get_db)):
     row = update_(User, new_row, item_id, db)
     if row is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
