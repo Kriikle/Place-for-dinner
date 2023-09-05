@@ -4,6 +4,16 @@ services:
     build: .
     ports:
       - 8080:8080
+    environment:
+      - DB_TYPE=2
+      - DB_SQLITE_NAME=db.db
+      - DB_HOST=127.0.0.1
+      - DB_USERNAME=User
+      - DB_PASSWORD=Admin
+      - DB_PORT=5432
+      - DB_NAME=Some
+      - TOKEN_SECRET_KEY=
+      - TOKEN_ALGORITHM
   db:
     image: postgres
     restart: always
