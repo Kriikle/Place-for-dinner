@@ -13,6 +13,7 @@ if DB_TYPE == 2:
                               "@" + DB_HOST +\
                               ':' + DB_PORT +\
                               "/" + DB_NAME
+    engine = create_engine(DATABASE_URL)
 elif DB_TYPE == 3:
     DATABASE_URL = "mysql+mysqlconnector://" \
                               + DB_USERNAME +\
@@ -20,15 +21,17 @@ elif DB_TYPE == 3:
                               "@" + DB_HOST +\
                               "[:" + DB_PORT +\
                               "]/" + DB_NAME
+    engine = create_engine(DATABASE_URL)
 else:
     os_type = os.name
     if os_type == 'nt':
         DATABASE_URL = "sqlite:///" + path + '\\' + DB_SQLITE_NAME
     else:
         DATABASE_URL = "sqlite:///" + path + '/' + DB_SQLITE_NAME
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
