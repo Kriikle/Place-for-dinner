@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     env_file:
-      -.env
+      .env
   backend:
     build: .
     ports:
@@ -28,7 +28,7 @@ services:
       - TOKEN_SECRET_KEY=${TOKEN_SECRET_KEY}
       - TOKEN_ALGORITHM=${TOKEN_ALGORITHM}
     env_file:
-      -.env
+      .env
 
 volumes:
   postgres_data:
