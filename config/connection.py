@@ -5,13 +5,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 from config.params import *
 
 path = os.getcwd()
-if DB_TYPE == 1:
-    os_type = os.name
-    if os_type == 'nt':
-        DATABASE_URL = "sqlite:///" + path + '\\' + DB_SQLITE_NAME
-    else:
-        DATABASE_URL = "sqlite:///" + path + '/' + DB_SQLITE_NAME
-elif DB_TYPE == 2:
+
+if DB_TYPE == 2:
     DATABASE_URL = "postgresql+psycopg2://"\
                               + DB_USERNAME +\
                               ":" + DB_PASSWORD +\
@@ -25,7 +20,12 @@ elif DB_TYPE == 3:
                               "@" + DB_HOST +\
                               "[:" + DB_PORT +\
                               "]/" + DB_NAME
-
+else:
+    os_type = os.name
+    if os_type == 'nt':
+        DATABASE_URL = "sqlite:///" + path + '\\' + DB_SQLITE_NAME
+    else:
+        DATABASE_URL = "sqlite:///" + path + '/' + DB_SQLITE_NAME
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False}
 )

@@ -1,5 +1,5 @@
 import os
-DB_TYPE = os.getenv('DB_TYPE',1)  # 1:sqlite, 2:postgres
+DB_TYPE = int(os.getenv('DB_TYPE', 1))  # 1:sqlite, 2:postgres
 DB_SQLITE_NAME = os.getenv('DB_TYPE', 'weat.db')
 DB_HOST = os.getenv('DB_HOST', '')
 DB_USERNAME = os.getenv('DB_USERNAME', '')
