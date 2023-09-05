@@ -8,24 +8,27 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_USER=User
-      - POSTGRES_PASSWORD=Admin
-      - POSTGRES_DB=Some
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    env_file:
+      -.env
   backend:
     build: .
     ports:
       - 8080:8080
     environment:
-      - DB_TYPE=2
-      - DB_SQLITE_NAME=db.db
-      - DB_HOST=127.0.0.1
-      - DB_USERNAME=User
-      - DB_PASSWORD=Admin
-      - DB_PORT=5432
-      - DB_NAME=Some
-      - TOKEN_SECRET_KEY=
-      - TOKEN_ALGORITHM
-
+      - DB_TYPE=${DB_TYPE}
+      - DB_SQLITE_NAME=d${DB_SQLITE_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - TOKEN_SECRET_KEY=${TOKEN_SECRET_KEY}
+      - TOKEN_ALGORITHM=${TOKEN_ALGORITHM}
+    env_file:
+      -.env
 
 volumes:
   postgres_data:
