@@ -12,7 +12,7 @@ if DB_TYPE == 1:
     else:
         DATABASE_URL = "sqlite:///" + path + '/' + DB_SQLITE_NAME
 elif DB_TYPE == 2:
-    DATABASE_URL = "postgresql+psycopg2:://"\
+    DATABASE_URL = "postgresql+psycopg2://"\
                               + DB_USERNAME +\
                               ":" + DB_PASSWORD +\
                               "@" + DB_HOST +\
