@@ -23,36 +23,56 @@ def get_db():
 router = APIRouter()
 
 
-@router.get("/", response_model=List[RestaurantRead])
-def get_all(db: Session = Depends(get_db)):
-    return get_all_(Restaurant, db)
+@router.get("/", response_model=List[RestaurantRead], )
+def get_my(db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+    user_id = current_user.id
+    if current_user.is_admin:
+        cafes = get_all_(Restaurant, db)
+    else:
+        cafes = db.query(Restaurant).filter_by(user_id=user_id)
+    return cafes
 
 
 @router.get("/{item_id}", response_model=RestaurantRead)
-def get_one(item_id: int, db: Session = Depends(get_db)):
-    department = get_one_(Restaurant, item_id, db)
-    if department is None:
+def get_one(item_id: int, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+    cafe = get_one_(Restaurant, item_id, db)
+    if cafe is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
-    return department
+    if current_user.id == cafe.user_id or current_user.is_admin:
+        return cafe
+
+    raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
 
 
 @router.post("/", response_model=RestaurantRead)
-def create(new_row: RestaurantCreate, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+def create(new_row: RestaurantCreate, db: Session = Depends(get_db),
+           current_user: UserRead = Depends(get_current_user)):
     new_row.user_id = current_user.id
     row = create_(Restaurant, new_row, db)
     return row
 
 
 @router.put("/{item_id}", response_model=RestaurantRead)
-def update(item_id: int, row_new: RestaurantBase, db: Session = Depends(get_db)):
-    row = update_(Restaurant, row_new, item_id, db)
+def update(item_id: int, row_new: RestaurantBase, db: Session = Depends(get_db),
+           current_user: UserRead = Depends(get_current_user)):
+    cafe = db.get(Restaurant, item_id)
+    row = None
+    if cafe is None:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    if current_user.id == cafe.user_id or current_user.is_admin:
+        row = update_(Restaurant, row_new, item_id, db, row=cafe)
     if row is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
     return row
 
 
 @router.delete("/{item_id}")
-def delete(item_id: int, db: Session = Depends(get_db)):
-    if delete_(Restaurant, item_id, db) is None:
+def delete(item_id: int, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+    cafe = db.get(Restaurant, item_id)
+    if cafe is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    if current_user.id != cafe.user_id or current_user.is_admin is not True:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    db.delete(cafe)
+    db.commit()
     return {"ok": True}

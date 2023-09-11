@@ -19,8 +19,9 @@ def create_(model: Base, new_row: BaseModel, db: Session):
     return db_new_row
 
 
-def update_(model: Base, new_row: BaseModel, item_id: int, db: Session):
-    row = db.get(model, item_id)
+def update_(model: Base, new_row: BaseModel, item_id: int, db: Session, row=None):
+    if row is None:
+        row = db.get(model, item_id)
     if row is None:
         return row
     row_dict = new_row.dict(exclude_unset=True)
@@ -32,8 +33,9 @@ def update_(model: Base, new_row: BaseModel, item_id: int, db: Session):
     return row
 
 
-def delete_(model: Base, item_id: int, db: Session):
-    row = db.get(model, item_id)
+def delete_(model: Base, item_id: int, db: Session, row=None):
+    if row is None:
+        row = db.get(model, item_id)
     if row is None:
         return row
     db.delete(row)
