@@ -16,7 +16,7 @@ class User(Base):
     password = Column(String, nullable=False)
     is_admin = Column(Boolean, nullable=True, )
 
-    restaurants = relationship("Restaurant", lazy='dynamic', back_populates="user")
+    restaurants = relationship("Restaurant", cascade='all, delete', lazy='dynamic', back_populates="user")
 
     def __repr__(self):
         return '{} {} {}'.format(self.lastname, self.firstname, self.patronymic)

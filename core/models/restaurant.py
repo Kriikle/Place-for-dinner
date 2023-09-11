@@ -9,7 +9,7 @@ class Restaurant(Base):
     __tablename__ = "restaurant"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id", ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     name = Column(String)
     img_path = Column(String, nullable=True)
     address = Column(String, nullable=True)

@@ -12,7 +12,7 @@ from core.schemas.user import UserRead, UserCreate, UserBase
 from v1.functions.auth import authenticate_user, create_access_token, get_password_hash, get_current_user
 
 from config.connection import get_db
-from v1.functions.crud import create_, update_
+from v1.functions.crud import create_, update_, delete_
 
 router = APIRouter()
 
@@ -29,3 +29,11 @@ def update(new_row: UserCreate, db: Session = Depends(get_db), current_user: Use
     if row is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
     return row
+
+
+@router.delete("/")
+def delete_me(db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+    item_id = current_user.id
+    if delete_(User, item_id, db) is None:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    return {"ok": True}
