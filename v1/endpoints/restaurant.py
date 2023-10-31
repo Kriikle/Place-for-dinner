@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from core.schemas.restaurant import RestaurantBase, RestaurantCreate, RestaurantRead
@@ -29,7 +30,12 @@ def get_my(db: Session = Depends(get_db), current_user: UserRead = Depends(get_c
     if current_user.is_admin:
         cafes = get_all_(Restaurant, db)
     else:
-        cafes = db.query(Restaurant).filter_by(user_id=user_id)
+        cafes = db.query(Restaurant).filter(
+            or_(
+                Restaurant.user_id.like(user_id),
+                Restaurant.is_public.is_(True)
+            )
+        )
     return cafes
 
 

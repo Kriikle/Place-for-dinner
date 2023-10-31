@@ -7,12 +7,14 @@ class RestaurantBase(BaseModel):
     address: constr(max_length=120)
     lat: float
     lot: float
+    is_public: bool
 
     class Config:
         from_attributes = True
 
 
 class RestaurantCreate(RestaurantBase):
+
     user_id: int
 
 
