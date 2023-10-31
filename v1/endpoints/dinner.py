@@ -8,12 +8,12 @@ from sqlalchemy.orm import Session
 from config.connection import SessionLocal, get_db
 from core.models.dinner import Dinner
 from core.models.restaurant import Restaurant
-from core.schemas.dinner import DinnerRead
+from core.schemas.dinner import DinnerRead, DinnerCreate
 from core.schemas.restaurant import RestaurantRead
 
 from core.schemas.user import UserRead
 from v1.functions.auth import get_current_user
-from v1.functions.crud import get_all_, get_one_
+from v1.functions.crud import get_all_, get_one_, create_
 
 router = APIRouter()
 
@@ -46,6 +46,11 @@ async def dinner_to_visit(
         cafe = choice(cafes.all())
     else:
         raise HTTPException(status_code=404, detail=f"Cafes not found")
+    new_row = DinnerCreate(
+        user_id=current_user.id,
+        restaurant_id=cafe.id,
+    )
+    row = create_(Dinner, new_row, db)
     return cafe
 
 

@@ -1,10 +1,11 @@
+from datetime import datetime
+
 from pydantic import BaseModel, constr
 
 
 class DinnerBase(BaseModel):
-    name: constr(max_length=120)
     user_id: int
-    lot: int
+    restaurant_id: int
 
     class Config:
         from_attributes = True
@@ -16,6 +17,5 @@ class DinnerCreate(DinnerBase):
 
 class DinnerRead(DinnerBase):
     id: int
-    datetime: int
-    user_id: int
-    restaurant_id: int
+    date_created: datetime
+
