@@ -17,6 +17,7 @@ class User(Base):
     is_admin = Column(Boolean, nullable=True, )
 
     restaurants = relationship("Restaurant", cascade='all, delete', lazy='dynamic', back_populates="user")
+    dinner = relationship("Dinner", cascade='all, delete', lazy='dynamic', back_populates="user")
 
     def __repr__(self):
         return '{} {} {}'.format(self.lastname, self.firstname, self.patronymic)

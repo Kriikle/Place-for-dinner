@@ -25,17 +25,20 @@ router = APIRouter()
 
 
 @router.get("/", response_model=List[RestaurantRead], )
-def get_my(db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+def get_my(get_not_my_public: bool = False, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
     user_id = current_user.id
     if current_user.is_admin:
         cafes = get_all_(Restaurant, db)
     else:
-        cafes = db.query(Restaurant).filter(
-            or_(
-                Restaurant.user_id.like(user_id),
-                Restaurant.is_public.is_(True)
+        if get_not_my_public:
+            cafes = db.query(Restaurant).filter(
+                or_(
+                    Restaurant.user_id.like(user_id),
+                    Restaurant.is_public.is_(True)
+                )
             )
-        )
+        else:
+            cafes = db.query(Restaurant).filter_by(user_id=user_id)
     return cafes
 
 

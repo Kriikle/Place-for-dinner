@@ -18,3 +18,4 @@ class Restaurant(Base):
     lot = Column(Double, nullable=True)
 
     user = relationship(User, foreign_keys=[user_id], back_populates="restaurants")
+    dinner = relationship("Dinner", cascade='all, delete', lazy='dynamic', back_populates="restaurant")
