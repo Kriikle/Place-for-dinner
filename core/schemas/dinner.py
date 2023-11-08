@@ -1,10 +1,10 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, constr
 
 
 class DinnerBase(BaseModel):
-    user_id: int
     restaurant_id: int
 
     class Config:
@@ -12,7 +12,7 @@ class DinnerBase(BaseModel):
 
 
 class DinnerCreate(DinnerBase):
-    pass
+    user_id: Optional[int] = None
 
 
 class DinnerRead(DinnerBase):

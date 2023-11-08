@@ -24,7 +24,7 @@ def get_db():
 router = APIRouter()
 
 
-@router.get("/", response_model=List[RestaurantRead], )
+@router.get("/", response_model=List[RestaurantRead])
 def get_my(get_not_my_public: bool = False, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
     user_id = current_user.id
     if current_user.is_admin:
@@ -39,7 +39,7 @@ def get_my(get_not_my_public: bool = False, db: Session = Depends(get_db), curre
             )
         else:
             cafes = db.query(Restaurant).filter_by(user_id=user_id)
-    return cafes
+    return cafes.all()
 
 
 @router.get("/{item_id}", response_model=RestaurantRead)
@@ -47,15 +47,16 @@ def get_one(item_id: int, db: Session = Depends(get_db), current_user: UserRead 
     cafe = get_one_(Restaurant, item_id, db)
     if cafe is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
-    if current_user.id == cafe.user_id or current_user.is_admin:
+    if current_user.id == cafe.user_id or current_user.is_admin or cafe.is_public == True:
         return cafe
 
     raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
 
 
 @router.post("/", response_model=RestaurantRead)
-def create(new_row: RestaurantCreate, db: Session = Depends(get_db),
+def create(new_row: RestaurantBase, db: Session = Depends(get_db),
            current_user: UserRead = Depends(get_current_user)):
+    new_row = RestaurantCreate(**dict(new_row))
     new_row.user_id = current_user.id
     row = create_(Restaurant, new_row, db)
     return row

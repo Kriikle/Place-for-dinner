@@ -1,12 +1,14 @@
-from pydantic import BaseModel, constr, PositiveFloat
+from typing import Optional
+
+from pydantic import BaseModel, constr, PositiveFloat, Field
 
 
 class RestaurantBase(BaseModel):
     name: constr(max_length=120)
-    img_path: constr(max_length=120)
-    address: constr(max_length=120)
-    lat: float
-    lot: float
+    img_path: Optional[constr(max_length=120)] = None
+    address: Optional[constr(max_length=120)] = None
+    lat: Optional[float] = None
+    lot: Optional[float] = None
     is_public: bool
 
     class Config:
@@ -14,10 +16,8 @@ class RestaurantBase(BaseModel):
 
 
 class RestaurantCreate(RestaurantBase):
-
-    user_id: int
+    user_id: Optional[int] = None
 
 
 class RestaurantRead(RestaurantBase):
     id: int
-    user_id: int
