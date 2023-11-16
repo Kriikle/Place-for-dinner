@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Double
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Double, UniqueConstraint
 from sqlalchemy.orm import relationship, validates
 
 from config.connection import Base
@@ -7,6 +7,9 @@ from core.models.user import User
 
 class Restaurant(Base):
     __tablename__ = "restaurant"
+    __table_args__ = (
+        UniqueConstraint('user_id', 'name'),
+    )
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id", ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
