@@ -10,16 +10,7 @@ from core.models.restaurant import Restaurant
 from core.schemas.user import UserRead
 from v1.functions.auth import get_current_user
 from v1.functions.crud import get_all_, get_one_, create_, update_, delete_
-from config.connection import SessionLocal
-
-
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
-
+from config.connection import SessionLocal, get_db
 
 router = APIRouter()
 
@@ -81,7 +72,7 @@ def delete(item_id: int, db: Session = Depends(get_db), current_user: UserRead =
     cafe = db.get(Restaurant, item_id)
     if cafe is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
-    if current_user.id != cafe.user_id or current_user.is_admin is not True:
+    if current_user.id != cafe.user_id and current_user.is_admin is not True:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
     db.delete(cafe)
     db.commit()
