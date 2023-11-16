@@ -48,7 +48,7 @@ def get_one(item_id: int, db: Session = Depends(get_db), current_user: UserRead 
 def create(new_row: RestaurantBase, db: Session = Depends(get_db),
            current_user: UserRead = Depends(get_current_user)):
     existing = db.query(Restaurant).filter(
-        (Restaurant.user_id == current_user.id) | (Restaurant.name == new_row.name)).all()
+        (Restaurant.user_id == current_user.id) & (Restaurant.name == new_row.name)).all()
     if existing:
         raise HTTPException(status_code=409, detail="Already created")
     new_row = RestaurantCreate(**dict(new_row))
