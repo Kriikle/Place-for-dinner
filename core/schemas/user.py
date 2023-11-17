@@ -17,9 +17,22 @@ class UserCreate(UserBase):
     password: constr(max_length=120)
 
 
+class UserUpdate(UserBase):
+    login: Optional[constr(max_length=120)]
+    email: Optional[EmailStr]
+    password: Optional[constr(max_length=120)]
+
+
 class UserCreateAdmin(UserBase):
     password: constr(max_length=120)
     is_admin: bool
+
+
+class UserUpdateAdmin(UserBase):
+    login: Optional[constr(max_length=120)]
+    email: Optional[EmailStr]
+    password: Optional[constr(max_length=120)]
+    is_admin: Optional[bool]
 
 
 class UserRead(UserBase):

@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from core.schemas.restaurant import RestaurantBase, RestaurantCreate, RestaurantRead
+from core.schemas.restaurant import RestaurantBase, RestaurantUpdate, RestaurantRead, RestaurantCreate
 from core.models.restaurant import Restaurant
 from core.schemas.user import UserRead
 from v1.functions.auth import get_current_user
@@ -30,7 +30,7 @@ def get_my(get_not_my_public: bool = False, db: Session = Depends(get_db), curre
             )
         else:
             cafes = db.query(Restaurant).filter_by(user_id=user_id)
-    return cafes.all()
+    return cafes
 
 
 @router.get("/{item_id}", response_model=RestaurantRead)
@@ -58,12 +58,14 @@ def create(new_row: RestaurantBase, db: Session = Depends(get_db),
 
 
 @router.put("/{item_id}", response_model=RestaurantRead)
-def update(item_id: int, row_new: RestaurantBase, db: Session = Depends(get_db),
+def update(item_id: int, row_new: RestaurantUpdate, db: Session = Depends(get_db),
            current_user: UserRead = Depends(get_current_user)):
     cafe = db.get(Restaurant, item_id)
     row = None
     if cafe is None:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+    if not current_user.is_admin:
+        row_new.is_public = False
     if current_user.id == cafe.user_id or current_user.is_admin:
         row = update_(Restaurant, row_new, item_id, db, row=cafe)
     if row is None:

@@ -26,7 +26,8 @@ def update_(model: Base, new_row: BaseModel, item_id: int, db: Session, row=None
         return row
     row_dict = new_row.dict(exclude_unset=True)
     for key, value in row_dict.items():
-        setattr(row, key, value)
+        if value is not None:
+            setattr(row, key, value)
     db.add(row)
     db.commit()
     db.refresh(row)

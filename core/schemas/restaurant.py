@@ -19,5 +19,14 @@ class RestaurantCreate(RestaurantBase):
     user_id: Optional[int] = None
 
 
+class RestaurantUpdate(RestaurantBase):
+    name: Optional[constr(max_length=120)]
+    img_path: Optional[constr(max_length=120)]
+    address: Optional[constr(max_length=120)]
+    lat: Optional[float]
+    lot: Optional[float]
+    is_public: bool
+
+
 class RestaurantRead(RestaurantBase):
     id: int

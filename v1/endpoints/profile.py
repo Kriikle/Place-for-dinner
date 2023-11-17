@@ -8,7 +8,7 @@ from starlette import status
 
 from core.models.user import User
 from core.schemas.token import TokenBase
-from core.schemas.user import UserRead, UserCreate, UserBase
+from core.schemas.user import UserRead, UserCreate, UserBase, UserUpdate
 from v1.functions.auth import authenticate_user, create_access_token, get_password_hash, get_current_user
 
 from config.connection import get_db
@@ -23,7 +23,7 @@ async def read_users_me(current_user: UserRead = Depends(get_current_user)):
 
 
 @router.put("/", response_model=UserRead)
-def update(new_row: UserCreate, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
+def update(new_row: UserUpdate, db: Session = Depends(get_db), current_user: UserRead = Depends(get_current_user)):
     item_id = current_user.id
     row = update_(User, new_row, item_id, db)
     if row is None:
