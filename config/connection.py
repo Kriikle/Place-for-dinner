@@ -7,20 +7,20 @@ from config.params import *
 path = os.getcwd()
 
 if DB_TYPE == 2:
-    DATABASE_URL = "postgresql+psycopg2://"\
-                              + DB_USERNAME +\
-                              ":" + DB_PASSWORD +\
-                              "@" + DB_HOST +\
-                              ':' + DB_PORT +\
-                              "/" + DB_NAME
+    DATABASE_URL = "postgresql+psycopg2://" \
+                   + DB_USERNAME + \
+                   ":" + DB_PASSWORD + \
+                   "@" + DB_HOST + \
+                   ':' + DB_PORT + \
+                   "/" + DB_NAME
     engine = create_engine(DATABASE_URL)
 elif DB_TYPE == 3:
     DATABASE_URL = "mysql+mysqlconnector://" \
-                              + DB_USERNAME +\
-                              ":" + DB_PASSWORD +\
-                              "@" + DB_HOST +\
-                              "[:" + DB_PORT +\
-                              "]/" + DB_NAME
+                   + DB_USERNAME + \
+                   ":" + DB_PASSWORD + \
+                   "@" + DB_HOST + \
+                   "[:" + DB_PORT + \
+                   "]/" + DB_NAME
     engine = create_engine(DATABASE_URL)
 else:
     os_type = os.name
@@ -34,6 +34,7 @@ else:
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
 
 def get_db():
     try:
