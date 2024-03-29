@@ -19,7 +19,7 @@ from v1.functions.crud import get_all_, get_one_, create_
 router = APIRouter()
 
 
-@router.get("/visit", response_model=RestaurantRead)  #
+@router.get("/visit", response_model=RestaurantRead)
 async def dinner_to_visit(
         only_my_cafes: bool = True,
         auto_add: bool = False,
@@ -30,20 +30,26 @@ async def dinner_to_visit(
         db: Session = Depends(get_db),
         current_user: UserRead = Depends(get_current_user)):
     user_id = current_user.id
-    if not only_my_cafes:
-        query = or_(Restaurant.user_id.like(user_id), Restaurant.is_public.is_(True))
+    if only_my_cafes:
+        query = Restaurant.user_id.like(user_id)
     else:
-        query = Restaurant.is_public.is_(True)
+        query = or_(Restaurant.user_id.like(user_id), Restaurant.is_public.is_(True))
     if history_check_limit:
         if 0 < history_check_limit < 10:
-            pass
-            # query = and_(query, Restaurant.id.not_in(
+            dinners = db.query(Dinner.restaurant_id).filter(Dinner.user_id.is_(user_id))
+            query = and_(
+                query,
+                Restaurant.id.not_in(
+                    [i[0] for i in dinners.order_by(Dinner.date_created.desc()).limit(history_check_limit)]
+                )
+            )
             #     'select d.restaurant_id from dinner d' +
             #     'WHERE d.user_id =' + str(current_user.id) +
             #     'order by d.date_created' +
             #     'LIMIT ' + str(history_check_limit)))
         else:
             raise HTTPException(status_code=404, detail=f"History_check_limit must be > 0, < 10")
+
     cafes = db.query(Restaurant).filter(query)
     if cafes.first():
         cafe = choice(cafes.all())
