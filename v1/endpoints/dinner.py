@@ -1,9 +1,10 @@
 from random import choice
-from typing import List
+from typing import List, Union
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session
+from sqlalchemy.testing import not_in
 
 from config.connection import SessionLocal, get_db
 from core.models.dinner import Dinner
@@ -22,32 +23,43 @@ router = APIRouter()
 async def dinner_to_visit(
         only_my_cafes: bool = True,
         auto_add: bool = False,
-        history_check_limit: int = 3,
-        radius: int = 0,
-        my_lat: float = 0,
-        my_lot: float = 0,
+        history_check_limit: Union[int, None] = None,
+        radius: Union[int, None] = None,
+        my_lat: Union[float, None] = None,
+        my_lot: Union[float, None] = None,
         db: Session = Depends(get_db),
         current_user: UserRead = Depends(get_current_user)):
     user_id = current_user.id
     if not only_my_cafes:
-        cafes = db.query(Restaurant).filter(
-            or_(
-                Restaurant.user_id.like(user_id),
-                Restaurant.is_public.is_(True)
-            )
-        )
+        query = or_(Restaurant.user_id.like(user_id), Restaurant.is_public.is_(True))
     else:
-        cafes = db.query(Restaurant).filter(Restaurant.is_public.is_(True))
+        query = Restaurant.is_public.is_(True)
+    if history_check_limit:
+        if 0 < history_check_limit < 10:
+            pass
+            # query = and_(query, Restaurant.id.not_in(
+            #     'select d.restaurant_id from dinner d' +
+            #     'WHERE d.user_id =' + str(current_user.id) +
+            #     'order by d.date_created' +
+            #     'LIMIT ' + str(history_check_limit)))
+        else:
+            raise HTTPException(status_code=404, detail=f"History_check_limit must be > 0, < 10")
+    cafes = db.query(Restaurant).filter(query)
     if cafes.first():
         cafe = choice(cafes.all())
     else:
         raise HTTPException(status_code=404, detail=f"Cafes not found")
+    if my_lot and my_lat and radius:
+        if my_lot > 0 and my_lat > 0 and 0 < radius < 2000:
+            pass
+        else:
+            pass
     if auto_add:
         new_row = DinnerCreate(
             user_id=current_user.id,
             restaurant_id=cafe.id,
         )
-        row = create_(Dinner, new_row, db)
+        create_(Dinner, new_row, db)
     return cafe
 
 
