@@ -18,9 +18,9 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    login: Optional[constr(max_length=120)]
-    email: Optional[EmailStr]
-    password: Optional[constr(max_length=120)]
+    login: Optional[constr(max_length=120)] = None
+    email: Optional[EmailStr] = None
+    password: Optional[constr(max_length=120)] = None
 
 
 class UserCreateAdmin(UserBase):
@@ -29,10 +29,10 @@ class UserCreateAdmin(UserBase):
 
 
 class UserUpdateAdmin(UserBase):
-    login: Optional[constr(max_length=120)]
-    email: Optional[EmailStr]
-    password: Optional[constr(max_length=120)]
-    is_admin: Optional[bool]
+    login: Optional[constr(max_length=120)] = None
+    email: Optional[EmailStr] = None
+    password: Optional[constr(max_length=120)] = None
+    is_admin: Optional[bool] = None
 
 
 class UserRead(UserBase):

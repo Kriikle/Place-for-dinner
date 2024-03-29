@@ -14,7 +14,7 @@ class Restaurant(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id", ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
-    is_public = Column(Boolean, nullable=False)
+    is_public = Column(Boolean, nullable=False, default=False)
     img_path = Column(String, nullable=True)
     address = Column(String, nullable=True)
     lat = Column(Double, nullable=True)

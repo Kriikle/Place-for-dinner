@@ -45,12 +45,14 @@ def get_one(item_id: int, db: Session = Depends(get_db), current_user: UserRead 
 
 
 @router.post("/", response_model=RestaurantRead)
-def create(new_row: RestaurantBase, db: Session = Depends(get_db),
+def create(new_row: RestaurantCreate, db: Session = Depends(get_db),
            current_user: UserRead = Depends(get_current_user)):
     existing = db.query(Restaurant).filter(
         (Restaurant.user_id == current_user.id) & (Restaurant.name == new_row.name)).all()
     if existing:
         raise HTTPException(status_code=409, detail="Already created")
+    if not current_user.is_admin:
+        new_row.is_public = False
     new_row = RestaurantCreate(**dict(new_row))
     new_row.user_id = current_user.id
     row = create_(Restaurant, new_row, db)
