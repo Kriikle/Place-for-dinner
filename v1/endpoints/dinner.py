@@ -20,29 +20,24 @@ router = APIRouter()
 
 @router.get("/visit", response_model=RestaurantRead)  #
 async def dinner_to_visit(
-        my_cafes: bool = True,
-        public_cafes: bool = True,
+        only_my_cafes: bool = True,
         auto_add: bool = False,
         history_check_limit: int = 3,
         radius: int = 0,
-        lat: float = 0,
-        lot: float = 0,
+        my_lat: float = 0,
+        my_lot: float = 0,
         db: Session = Depends(get_db),
         current_user: UserRead = Depends(get_current_user)):
     user_id = current_user.id
-    if my_cafes and public_cafes:
+    if not only_my_cafes:
         cafes = db.query(Restaurant).filter(
             or_(
                 Restaurant.user_id.like(user_id),
                 Restaurant.is_public.is_(True)
             )
         )
-    elif my_cafes:
-        cafes = db.query(Restaurant).filter_by(user_id=user_id)
-    elif public_cafes:
-        cafes = db.query(Restaurant).filter(Restaurant.is_public.is_(True))
     else:
-        raise HTTPException(status_code=404, detail=f"Cafes not found")
+        cafes = db.query(Restaurant).filter(Restaurant.is_public.is_(True))
     if cafes.first():
         cafe = choice(cafes.all())
     else:
